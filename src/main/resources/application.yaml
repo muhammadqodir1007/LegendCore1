@@ -1,0 +1,24 @@
+spring:
+#  security:
+#    user:
+#      name: Alex
+#      password: password
+#      roles: Admin
+  datasource:
+    url: jdbc:postgresql://localhost:5432/legends
+    password: 1007
+    username: postgres
+    driver-class-name: org.postgresql.Driver
+
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+
+
+server:
+  port: 8081
+  address: 0.0.0.0
+
+
