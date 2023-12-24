@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface MaterialTransactionRepository extends JpaRepository<MaterialTransaction, Integer> {
-    List<MaterialTransaction> findAllByAdminId(int id);
+    List<MaterialTransaction> findAllByUserId(int id);
 
 }

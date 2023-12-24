@@ -25,7 +25,7 @@ public class Item {
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    private Admin admin;
+    private User user;
 
 
     @ManyToOne

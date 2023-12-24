@@ -1,9 +1,10 @@
 package com.example.legendcore.service;
 
-import com.example.legendcore.entity.Admin;
+import com.example.legendcore.entity.Role;
+import com.example.legendcore.entity.User;
 import com.example.legendcore.exception.RestException;
 import com.example.legendcore.payload.ApiResponse;
-import com.example.legendcore.repository.AdminRepository;
+import com.example.legendcore.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,40 +15,40 @@ import java.util.List;
 @AllArgsConstructor
 public class AdminService {
 
-    private final AdminRepository adminRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public ApiResponse<List<Admin>> getAll() {
-        return ApiResponse.successResponse(adminRepository.findAll());
+    public ApiResponse<List<User>> getAll() {
+        return ApiResponse.successResponse(userRepository.findAll());
     }
 
-    public ApiResponse<Admin> getByUsername(String username) {
-        Admin admin = adminRepository.findByUsername(username).orElseThrow(() -> RestException.restThrow("username not found"));
-        return ApiResponse.successResponse(admin);
+    public ApiResponse<User> getByUsername(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> RestException.restThrow("username not found"));
+        return ApiResponse.successResponse(user);
     }
 
-    public ApiResponse<Admin> insert(Admin admin) {
-        Admin newAdmin = new Admin();
-        newAdmin.setRole("ADMIN");
-        newAdmin.setDescription(admin.getDescription());
-        newAdmin.setUsername(admin.getUsername());
-        newAdmin.setPassword(passwordEncoder.encode(admin.getPassword()));
-        adminRepository.save(newAdmin);
+    public ApiResponse<User> insert(User user) {
+        User newUser = new User();
+        newUser.setRole(Role.ADMIN);
+        newUser.setDescription(user.getDescription());
+        newUser.setUsername(user.getUsername());
+        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(newUser);
         return ApiResponse.successResponse("created successfully");
     }
 
     public ApiResponse<?> delete(int id) {
-        adminRepository.deleteById(id);
+        userRepository.deleteById(id);
         return ApiResponse.successResponse("deleted");
     }
 
-    public ApiResponse<Admin> update(int id, Admin updatedAdmin) {
-        Admin admin = adminRepository.findById(id).orElseThrow(() -> RestException.restThrow("admin not found"));
-        admin.setRole(updatedAdmin.getRole());
-        admin.setPassword(updatedAdmin.getPassword());
-        admin.setDescription(updatedAdmin.getDescription());
-        admin.setUsername(updatedAdmin.getUsername());
-        adminRepository.save(admin);
+    public ApiResponse<User> update(int id, User updatedUser) {
+        User user = userRepository.findById(id).orElseThrow(() -> RestException.restThrow("user not found"));
+        user.setRole(updatedUser.getRole());
+        user.setPassword(updatedUser.getPassword());
+        user.setDescription(updatedUser.getDescription());
+        user.setUsername(updatedUser.getUsername());
+        userRepository.save(user);
         return ApiResponse.successResponse("edited successfully");
     }
 }

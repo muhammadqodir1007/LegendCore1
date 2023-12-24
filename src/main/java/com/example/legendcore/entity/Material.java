@@ -24,7 +24,7 @@ public class Material {
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    private Admin admin;
+    private User user;
 
     @ManyToOne
     private MaterialType materialType;

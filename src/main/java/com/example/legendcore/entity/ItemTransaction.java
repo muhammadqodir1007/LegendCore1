@@ -22,7 +22,7 @@ public class ItemTransaction {
     private ItemType itemType;
 
     @ManyToOne
-    private Admin admin;
+    private User user;
 
     @ManyToOne
     private Category category;

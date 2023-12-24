@@ -4,19 +4,18 @@ import com.example.legendcore.entity.Item;
 import com.example.legendcore.payload.ApiResponse;
 import com.example.legendcore.payload.ItemDto;
 import com.example.legendcore.service.ItemService;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api/item")
 public class ItemController {
 
     private final ItemService itemService;
 
-    public ItemController(ItemService itemService) {
-        this.itemService = itemService;
-    }
 
     @GetMapping
     public ApiResponse<List<Item>> getAllItems() {

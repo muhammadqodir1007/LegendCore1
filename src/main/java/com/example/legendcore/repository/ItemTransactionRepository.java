@@ -10,5 +10,5 @@ import java.util.List;
 public interface ItemTransactionRepository extends JpaRepository<ItemTransaction,Integer> {
 
 
-  List<ItemTransaction> findAllByAdminId(int id);
+  List<ItemTransaction> findAllByUserId(int id);
 }

@@ -1,9 +1,9 @@
 spring:
-#  security:
-#    user:
-#      name: Alex
-#      password: password
-#      roles: Admin
+  #  security:
+  #    user:
+  #      name: Alex
+  #      password: password
+  #      roles: User
   datasource:
     url: jdbc:postgresql://localhost:5432/legends
     password: 1007
@@ -11,14 +11,17 @@ spring:
     driver-class-name: org.postgresql.Driver
 
 
+
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
 
 
 
 server:
-  port: 8081
+  port: 8083
   address: 0.0.0.0
 
-
+jwt:
+  secret: $KC@RusNYQZag9nIR&EaFiD598Sg5*rinwtKE%CiVLBkj7ZztZ
+  expiration: 86400

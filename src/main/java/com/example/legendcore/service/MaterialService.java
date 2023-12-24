@@ -1,13 +1,13 @@
 package com.example.legendcore.service;
 
-import com.example.legendcore.entity.Admin;
+import com.example.legendcore.entity.User;
 import com.example.legendcore.entity.Material;
 import com.example.legendcore.entity.MaterialCategory;
 import com.example.legendcore.entity.MaterialType;
 import com.example.legendcore.exception.RestException;
 import com.example.legendcore.payload.ApiResponse;
 import com.example.legendcore.payload.MaterialDto;
-import com.example.legendcore.repository.AdminRepository;
+import com.example.legendcore.repository.UserRepository;
 import com.example.legendcore.repository.MaterialCategoryRepository;
 import com.example.legendcore.repository.MaterialRepository;
 import com.example.legendcore.repository.MaterialTypeRepository;
@@ -25,7 +25,7 @@ public class MaterialService {
     private final MaterialTypeRepository materialTypeRepository;
     MaterialCategoryRepository materialCategoryRepository;
     private final MaterialTransactionService materialTransactionService;
-    private final AdminRepository adminRepository;
+    private final UserRepository userRepository;
 
     public ApiResponse<List<Material>> getAll() {
         List<Material> allMaterials = materialRepository.findAll();
@@ -39,7 +39,7 @@ public class MaterialService {
 
     public ApiResponse<?> insert(MaterialDto materialDto) {
         MaterialCategory category = materialCategoryRepository.findById(materialDto.getCategoryId()).orElseThrow(() -> RestException.restThrow("Category not found"));
-        Admin admin = adminRepository.findById(materialDto.getAdminId()).orElseThrow(() -> RestException.restThrow("Admin not found"));
+        User user = userRepository.findById(materialDto.getAdminId()).orElseThrow(() -> RestException.restThrow("User not found"));
         MaterialType itemType = materialTypeRepository.findById(materialDto.getMaterialTypeId()).orElseThrow(() -> RestException.restThrow("Item Type not found"));
 
 
@@ -58,7 +58,7 @@ public class MaterialService {
             item.setQuantity(materialDto.getQuantity());
             item.setCreatedAt(LocalDateTime.now());
         }
-        item.setAdmin(admin);
+        item.setUser(user);
 
 
         materialRepository.save(item);
@@ -78,7 +78,7 @@ public class MaterialService {
     public ApiResponse<?> delete(MaterialDto materialDto) {
 
         MaterialType itemType1 = materialTypeRepository.findById(materialDto.getMaterialTypeId()).orElseThrow(() -> RestException.restThrow("item type not found"));
-        Admin admin = adminRepository.findById(materialDto.getAdminId()).orElseThrow(() -> RestException.restThrow("admin not found"));
+        User user = userRepository.findById(materialDto.getAdminId()).orElseThrow(() -> RestException.restThrow("user not found"));
         boolean exists = materialRepository.existsByMaterialType(itemType1);
         Material save;
         if (exists) {
@@ -86,7 +86,7 @@ public class MaterialService {
             if (item.getQuantity() < materialDto.getQuantity())
                 throw RestException.restThrow("there is not enough product");
             item.setQuantity(item.getQuantity() - materialDto.getQuantity());
-            item.setAdmin(admin);
+            item.setUser(user);
             save = materialRepository.save(item);
 
         } else {

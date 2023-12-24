@@ -1,16 +1,16 @@
 package com.example.legendcore.service;
 
-import com.example.legendcore.entity.Admin;
 import com.example.legendcore.entity.MaterialCategory;
 import com.example.legendcore.entity.MaterialTransaction;
 import com.example.legendcore.entity.MaterialType;
+import com.example.legendcore.entity.User;
 import com.example.legendcore.exception.RestException;
 import com.example.legendcore.payload.ApiResponse;
 import com.example.legendcore.payload.MaterialDto;
-import com.example.legendcore.repository.AdminRepository;
 import com.example.legendcore.repository.MaterialCategoryRepository;
 import com.example.legendcore.repository.MaterialTransactionRepository;
 import com.example.legendcore.repository.MaterialTypeRepository;
+import com.example.legendcore.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,18 +24,18 @@ public class MaterialTransactionService {
 
     private final MaterialTypeRepository materialTypeRepository;
     private final MaterialCategoryRepository materialCategoryRepository;
-    private final AdminRepository adminRepository;
+    private final UserRepository userRepository;
 
     public void add(MaterialDto item, String actionType) {
         MaterialCategory category = materialCategoryRepository.findById(item.getCategoryId()).orElseThrow(() -> RestException.restThrow("Category not found"));
-        Admin admin = adminRepository.findById(item.getAdminId()).orElseThrow(() -> RestException.restThrow("Admin not found"));
+        User user = userRepository.findById(item.getAdminId()).orElseThrow(() -> RestException.restThrow("User not found"));
         MaterialType itemType = materialTypeRepository.findById(item.getMaterialTypeId()).orElseThrow(() -> RestException.restThrow("Item Type not found"));
 
 
         MaterialTransaction itemTransaction = new MaterialTransaction();
         itemTransaction.setItemType(itemType);
         itemTransaction.setCategory(category);
-        itemTransaction.setAdmin(admin);
+        itemTransaction.setUser(user);
         itemTransaction.setQuantity(item.getQuantity());
         itemTransaction.setActionType(actionType);
         itemTransaction.setActionDate(LocalDateTime.now());
@@ -49,7 +49,7 @@ public class MaterialTransactionService {
     }
 
     public ApiResponse<List<MaterialTransaction>> getByAdminId(int adminId) {
-        List<MaterialTransaction> allByAdminId = materialTransactionRepository.findAllByAdminId(adminId);
+        List<MaterialTransaction> allByAdminId = materialTransactionRepository.findAllByUserId(adminId);
         return ApiResponse.successResponse(allByAdminId);
     }
 
@@ -60,14 +60,14 @@ public class MaterialTransactionService {
 
     public void delete(MaterialDto materialDto, String action) {
         MaterialCategory materialCategory = materialCategoryRepository.findById(materialDto.getCategoryId()).orElseThrow(() -> RestException.restThrow("category not found"));
-        Admin admin = adminRepository.findById(materialDto.getAdminId()).orElseThrow(() -> RestException.restThrow("admin not found"));
+        User user = userRepository.findById(materialDto.getAdminId()).orElseThrow(() -> RestException.restThrow("user not found"));
         MaterialType itemType = materialTypeRepository.findById(materialDto.getMaterialTypeId()).orElseThrow(() -> RestException.restThrow("item type not found"));
 
 
         MaterialTransaction itemTransaction = new MaterialTransaction();
         itemTransaction.setItemType(itemType);
         itemTransaction.setCategory(materialCategory);
-        itemTransaction.setAdmin(admin);
+        itemTransaction.setUser(user);
         itemTransaction.setQuantity(materialDto.getQuantity());
         itemTransaction.setActionDate(LocalDateTime.now());
         itemTransaction.setActionType(action);

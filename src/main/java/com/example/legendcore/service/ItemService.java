@@ -1,13 +1,13 @@
 package com.example.legendcore.service;
 
-import com.example.legendcore.entity.Admin;
+import com.example.legendcore.entity.User;
 import com.example.legendcore.entity.Category;
 import com.example.legendcore.entity.Item;
 import com.example.legendcore.entity.ItemType;
 import com.example.legendcore.exception.RestException;
 import com.example.legendcore.payload.ApiResponse;
 import com.example.legendcore.payload.ItemDto;
-import com.example.legendcore.repository.AdminRepository;
+import com.example.legendcore.repository.UserRepository;
 import com.example.legendcore.repository.CategoryRepository;
 import com.example.legendcore.repository.ItemRepository;
 import com.example.legendcore.repository.ItemTypeRepository;
@@ -25,7 +25,7 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final CategoryRepository categoryRepository;
     private final ItemTransactionService itemTransactionService;
-    private final AdminRepository adminRepository;
+    private final UserRepository userRepository;
 
     public ApiResponse<List<Item>> getAll() {
         return ApiResponse.successResponse(itemRepository.findAll());
@@ -38,7 +38,7 @@ public class ItemService {
 
     public ApiResponse<?> insert(ItemDto itemDto) {
         Category category = categoryRepository.findById(itemDto.getCategoryId()).orElseThrow(() -> RestException.restThrow("Category not found"));
-        Admin admin = adminRepository.findById(itemDto.getAdminId()).orElseThrow(() -> RestException.restThrow("Admin not found"));
+        User user = userRepository.findById(itemDto.getAdminId()).orElseThrow(() -> RestException.restThrow("User not found"));
         ItemType itemType = itemTypeRepository.findById(itemDto.getItemType()).orElseThrow(() -> RestException.restThrow("Item Type not found"));
 
 
@@ -53,13 +53,13 @@ public class ItemService {
             item = new Item();
             item.setItemType(itemType);
             item.setCategory(category);
-//            item.setAdmin(admin);
+//            item.setUser(user);
             item.setDescription(itemDto.getDescription());
             item.setQuantity(itemDto.getQuantity());
             item.setCreatedAt(LocalDateTime.now());
 //            itemRepository.save(item);
         }
-        item.setAdmin(admin);
+        item.setUser(user);
 
 
         itemRepository.save(item);
@@ -75,7 +75,7 @@ public class ItemService {
 
     public ApiResponse<?> delete(ItemDto itemDto) {
         ItemType itemType1 = itemTypeRepository.findById(itemDto.getItemType()).orElseThrow(() -> RestException.restThrow("item type not found"));
-        Admin admin = adminRepository.findById(itemDto.getAdminId()).orElseThrow(() -> RestException.restThrow("admin not found"));
+        User user = userRepository.findById(itemDto.getAdminId()).orElseThrow(() -> RestException.restThrow("user not found"));
         boolean exists = itemRepository.existsByItemType(itemType1);
         Item save;
         if (exists) {
@@ -83,7 +83,7 @@ public class ItemService {
             if (item.getQuantity() < itemDto.getQuantity())
                 throw RestException.restThrow("there is not enough product");
             item.setQuantity(item.getQuantity() - itemDto.getQuantity());
-            item.setAdmin(admin);
+            item.setUser(user);
             save = itemRepository.save(item);
 
         } else {

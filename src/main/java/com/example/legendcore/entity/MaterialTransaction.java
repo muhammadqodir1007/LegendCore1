@@ -22,7 +22,7 @@ public class MaterialTransaction {
     private MaterialType itemType;
 
     @ManyToOne
-    private Admin admin;
+    private User user;
 
 
     @ManyToOne
